@@ -1,0 +1,97 @@
+// ===========================
+// Module: Accounts
+// ===========================
+
+CREATE TYPE Accounts::User {
+    id int required;
+    username str required;
+    email str;
+    is_active bool DEFAULT true;
+    age int;
+    score float DEFAULT 0.0;
+    link profile -> Profiles::UserProfile;
+    link groups -> Groups::Group multi;
+    /* multi-line
+       comment test */
+    constraint email_check {
+        // simple expression check
+        email != "";
+    }
+};
+
+// Another type
+CREATE TYPE Profiles::UserProfile {
+    bio str;
+    avatar_url str;
+    link user -> Accounts::User;
+    constraint bio_length {
+        length(bio) < 200;
+    }
+};
+
+// Scalar types
+CREATE SCALAR TYPE CustomInt EXTENDING int;
+CREATE SCALAR TYPE PositiveInt EXTENDING CustomInt;
+
+// ALTER TYPE examples
+ALTER TYPE Accounts::User
+    ADD link logs -> Logs::UserLog multi,
+    DROP age int,
+    ALTER is_active bool required;
+
+// ===========================
+// Module: Groups
+// ===========================
+
+CREATE TYPE Groups::Group {
+    id int required;
+    name str required;
+    link members -> Accounts::User multi;
+    constraint name_check {
+        length(name) > 0;
+    }
+};
+
+// ===========================
+// Module: Logs
+// ===========================
+
+CREATE TYPE Logs::UserLog {
+    id int required;
+    message str required;
+    created_at int;
+    link user -> Accounts::User;
+};
+
+// Scalar with default expression
+CREATE SCALAR TYPE Score EXTENDING float DEFAULT 0.0;
+
+// ===========================
+// Additional Tests
+// ===========================
+
+// Simple field + multi + default
+CREATE TYPE Misc::Item {
+    name str required;
+    tags str multi;
+    value float DEFAULT 10.0;
+};
+
+// Module-prefixed scalar
+CREATE SCALAR TYPE Misc::Rating EXTENDING Score DEFAULT 5.0;
+
+// Multi-level module type
+CREATE TYPE Complex::Container {
+    content Misc::Item multi;
+    owner Accounts::User;
+    link related -> Complex::Container multi;
+};
+
+// ===========================
+// Comments and semicolons
+// ===========================
+
+; // empty semicolon
+// single-line comment
+/* multi-line comment */
+
