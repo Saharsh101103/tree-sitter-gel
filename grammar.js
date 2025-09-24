@@ -1,7 +1,7 @@
-/**
- * @file tree-sitter for GEL/EdgeQL (extended)
- * @author Saharsh
- * @license MIT
+/*
+ * Tree-sitter grammar for GEL schema files (.gel)
+ * Author: Saharsh
+ * License: MIT
  */
 
 /// <reference types="tree-sitter-cli/dsl" />
@@ -10,149 +10,180 @@
 module.exports = grammar({
   name: "gel",
 
+ 
   rules: {
     // ---------------------
-    // Top-level
+    // Top-level source file
     // ---------------------
     source_file: $ => repeat($._statement),
 
     _statement: $ => choice(
-      $.create_type,
-      $.create_scalar_type,
-      $.alter_type,
+      $.module_def,
+      $.alias_stmt,
+      $.scalar_def,
+      $.type_def,
       $.comment,
       $.multi_line_comment,
       $.semicolon
     ),
 
     // ---------------------
-    // CREATE TYPE
+    // Modules
     // ---------------------
-    create_type: $ => seq(
-      "CREATE TYPE",
-      $.type_name,
+    module_def: $ => seq(
+      "module",
+      $.identifier,
       "{",
-      repeat($._type_body_element),
+      repeat($._statement),
       "}"
     ),
 
-    _type_body_element: $ => choice(
+    // ---------------------
+    // Aliases
+    // ---------------------
+    alias_stmt: $ => seq(
+      "alias",
+      $.identifier,
+      ":=",
+      $.type_name,
+      ";"
+    ),
+
+    // ---------------------
+    // Scalar types
+    // ---------------------
+    scalar_def: $ => seq(
+      "scalar",
+      "type",
+      $.identifier,
+      optional(seq("extending", $.type_name)),
+      ";"
+    ),
+
+    // ---------------------
+    // Object types
+    // ---------------------
+    type_def: $ => seq(
+      "type",
+      $.identifier,
+      optional(seq("extending", $.type_name)),
+      "{",
+      repeat($._type_body),
+      "}"
+    ),
+
+    _type_body: $ => choice(
+      $.annotation,
       $.field,
-      $.link,
-      $.constraint,
+      $.overloaded_field,
+      $.trigger,
       $.comment,
       $.multi_line_comment
     ),
 
-    // Field with optional attributes and default
+    // ---------------------
+    // Fields
+    // ---------------------
     field: $ => seq(
       $.identifier,
+      ":",
       $.type_name,
-      repeat($.field_attribute),
-      optional(seq("DEFAULT", $.expression)),
+      optional(seq(":", $.type_name)),
+      optional($.field_attributes),
       ";"
     ),
 
-    // Link field
-    link: $ => seq(
-      "link",
+    overloaded_field: $ => seq(
+      "overloaded",
       $.identifier,
-      "->",
+      ":",
       $.type_name,
-      repeat($.field_attribute),
-      optional(seq("DEFAULT", $.expression)),
       ";"
     ),
 
-    // Field attributes: multi / required
-    field_attribute: $ => choice(
-      "multi",
-      "required"
-    ),
-
-    // ---------------------
-    // Constraints
-    // ---------------------
-    constraint: $ => seq(
-      "constraint",
-      $.identifier,
-      "{",
-      repeat($.constraint_body),
-      "}"
-    ),
-
-    constraint_body: $ => choice(
-      $.expression,
-      $.comment,
-      $.multi_line_comment
-    ),
-
-    // ---------------------
-    // CREATE SCALAR TYPE
-    // ---------------------
-    create_scalar_type: $ => seq(
-      "CREATE SCALAR TYPE",
-      $.type_name,
-      optional(seq("EXTENDING", $.type_name)),
-      ";"
-    ),
-
-    // ---------------------
-    // ALTER TYPE
-    // ---------------------
-    alter_type: $ => seq(
-      "ALTER TYPE",
-      $.type_name,
-      repeat($.alter_action)
-    ),
-
-    alter_action: $ => seq(
-      choice("ADD", "DROP", "ALTER"),
-      $._type_body_element
-    ),
-
-    // ---------------------
-    // Type names (built-in + user-defined) with optional module
-    // ---------------------
-    type_name: $ => seq(
-      optional(seq($.identifier, "::")),
-      choice(
-        "str",
-        "int",
-        "float",
-        "bool",
-        $.identifier
-      )
-    ),
-
-    // ---------------------
-    // Expressions (nested with precedence)
-    // ---------------------
-    expression: $ => choice(
-      $.term,
-      $.sum
-    ),
-
-    sum: $ => prec.left(1, seq($.product, repeat(seq(choice("+", "-"), $.product)))),
-    product: $ => prec.left(2, seq($.term, repeat(seq(choice("*", "/"), $.term)))),
-    term: $ => prec(3, choice(
-      $.number,
-      $.string,
-      "true",
-      "false",
-      $.identifier,
-      seq("(", $.expression, ")")
+    field_attributes: $ => repeat1(choice(
+      "required",
+      "multi"
     )),
 
     // ---------------------
-    // Numbers
+    // Annotations
+    // ---------------------
+    annotation: $ => seq(
+      "annotation",
+      $.qualified_identifier,
+      ":=",
+      $.expression,
+      ";"
+    ),
+
+    qualified_identifier: $ => seq(
+      $.identifier,
+      repeat(seq("::", $.identifier))
+    ),
+
+    // ---------------------
+    // Triggers
+    // ---------------------
+    trigger: $ => seq(
+      "trigger",
+      $.identifier,
+      optional($.trigger_modifier),
+      optional($.trigger_for_each),
+      optional($.trigger_when),
+      optional($.trigger_do),
+      ";"
+    ),
+
+    trigger_modifier: $ => seq(
+      choice("after", "before"),
+      $.identifier
+    ),
+
+    trigger_for_each: $ => seq(
+      "for",
+      "each"
+    ),
+
+    trigger_when: $ => seq(
+      "when",
+      $.expression
+    ),
+
+    trigger_do: $ => seq(
+      "do",
+      "(",
+      repeat1($.expression),
+      ")"
+    ),
+
+    // ---------------------
+    // Type names
+    // ---------------------
+    type_name: $ => seq(
+      optional(seq($.identifier, "::")),
+      $.identifier,
+      optional(seq(
+        "<",
+        commaSep1($.identifier),
+        ">"
+      ))
+    ),
+
+    // ---------------------
+    // Expressions (simplified)
+    // ---------------------
+    expression: $ => choice(
+      $.string,
+      $.number,
+      $.identifier
+    ),
+
+    // ---------------------
+    // Literals
     // ---------------------
     number: $ => /\d+(\.\d+)?/,
-
-    // Strings
     string: $ => /"([^"\\]|\\.)*"/,
-
-    // Identifiers
     identifier: $ => /[a-zA-Z_]\w*/,
 
     // ---------------------
@@ -165,4 +196,11 @@ module.exports = grammar({
     semicolon: $ => ";"
   }
 });
+
+// ---------------------
+// Helper functions
+// ---------------------
+function commaSep1(rule) {
+  return seq(rule, repeat(seq(",", rule)));
+}
 

@@ -1,37 +1,6 @@
 [
   {
-    "type": "alter_action",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
-        },
-        {
-          "type": "constraint",
-          "named": true
-        },
-        {
-          "type": "field",
-          "named": true
-        },
-        {
-          "type": "link",
-          "named": true
-        },
-        {
-          "type": "multi_line_comment",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "alter_type",
+    "type": "alias_stmt",
     "named": true,
     "fields": {},
     "children": {
@@ -39,11 +8,30 @@
       "required": true,
       "types": [
         {
-          "type": "alter_action",
+          "type": "identifier",
           "named": true
         },
         {
           "type": "type_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "annotation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "qualified_identifier",
           "named": true
         }
       ]
@@ -55,98 +43,6 @@
     "fields": {}
   },
   {
-    "type": "constraint",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "constraint_body",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "constraint_body",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "multi_line_comment",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "create_scalar_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "type_name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "create_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
-        },
-        {
-          "type": "constraint",
-          "named": true
-        },
-        {
-          "type": "field",
-          "named": true
-        },
-        {
-          "type": "link",
-          "named": true
-        },
-        {
-          "type": "multi_line_comment",
-          "named": true
-        },
-        {
-          "type": "type_name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "expression",
     "named": true,
     "fields": {},
@@ -155,11 +51,15 @@
       "required": true,
       "types": [
         {
-          "type": "sum",
+          "type": "identifier",
           "named": true
         },
         {
-          "type": "term",
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "string",
           "named": true
         }
       ]
@@ -174,11 +74,7 @@
       "required": true,
       "types": [
         {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "field_attribute",
+          "type": "field_attributes",
           "named": true
         },
         {
@@ -193,12 +89,12 @@
     }
   },
   {
-    "type": "field_attribute",
+    "type": "field_attributes",
     "named": true,
     "fields": {}
   },
   {
-    "type": "link",
+    "type": "module_def",
     "named": true,
     "fields": {},
     "children": {
@@ -206,11 +102,11 @@
       "required": true,
       "types": [
         {
-          "type": "expression",
+          "type": "alias_stmt",
           "named": true
         },
         {
-          "type": "field_attribute",
+          "type": "comment",
           "named": true
         },
         {
@@ -218,7 +114,23 @@
           "named": true
         },
         {
-          "type": "type_name",
+          "type": "module_def",
+          "named": true
+        },
+        {
+          "type": "multi_line_comment",
+          "named": true
+        },
+        {
+          "type": "scalar_def",
+          "named": true
+        },
+        {
+          "type": "semicolon",
+          "named": true
+        },
+        {
+          "type": "type_def",
           "named": true
         }
       ]
@@ -230,7 +142,7 @@
     "fields": {}
   },
   {
-    "type": "product",
+    "type": "overloaded_field",
     "named": true,
     "fields": {},
     "children": {
@@ -238,7 +150,45 @@
       "required": true,
       "types": [
         {
-          "type": "term",
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "type_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "qualified_identifier",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "scalar_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "type_name",
           "named": true
         }
       ]
@@ -259,7 +209,7 @@
       "required": false,
       "types": [
         {
-          "type": "alter_type",
+          "type": "alias_stmt",
           "named": true
         },
         {
@@ -267,11 +217,7 @@
           "named": true
         },
         {
-          "type": "create_scalar_type",
-          "named": true
-        },
-        {
-          "type": "create_type",
+          "type": "module_def",
           "named": true
         },
         {
@@ -279,14 +225,22 @@
           "named": true
         },
         {
+          "type": "scalar_def",
+          "named": true
+        },
+        {
           "type": "semicolon",
+          "named": true
+        },
+        {
+          "type": "type_def",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "sum",
+    "type": "trigger",
     "named": true,
     "fields": {},
     "children": {
@@ -294,22 +248,96 @@
       "required": true,
       "types": [
         {
-          "type": "product",
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "trigger_do",
+          "named": true
+        },
+        {
+          "type": "trigger_for_each",
+          "named": true
+        },
+        {
+          "type": "trigger_modifier",
+          "named": true
+        },
+        {
+          "type": "trigger_when",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "term",
+    "type": "trigger_do",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "trigger_for_each",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "trigger_modifier",
     "named": true,
     "fields": {},
     "children": {
       "multiple": false,
-      "required": false,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "trigger_when",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
       "types": [
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "comment",
+          "named": true
+        },
+        {
+          "type": "field",
           "named": true
         },
         {
@@ -317,11 +345,19 @@
           "named": true
         },
         {
-          "type": "number",
+          "type": "multi_line_comment",
           "named": true
         },
         {
-          "type": "string",
+          "type": "overloaded_field",
+          "named": true
+        },
+        {
+          "type": "trigger",
+          "named": true
+        },
+        {
+          "type": "type_name",
           "named": true
         }
       ]
@@ -333,7 +369,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "identifier",
@@ -351,19 +387,7 @@
     "named": false
   },
   {
-    "type": "*",
-    "named": false
-  },
-  {
-    "type": "+",
-    "named": false
-  },
-  {
-    "type": "-",
-    "named": false
-  },
-  {
-    "type": "->",
+    "type": ",",
     "named": false
   },
   {
@@ -379,7 +403,15 @@
     "named": false
   },
   {
+    "type": ":",
+    "named": false
+  },
+  {
     "type": "::",
+    "named": false
+  },
+  {
+    "type": ":=",
     "named": false
   },
   {
@@ -387,51 +419,43 @@
     "named": false
   },
   {
-    "type": "ADD",
+    "type": "<",
     "named": false
   },
   {
-    "type": "ALTER",
+    "type": ">",
     "named": false
   },
   {
-    "type": "ALTER TYPE",
+    "type": "after",
     "named": false
   },
   {
-    "type": "CREATE SCALAR TYPE",
+    "type": "alias",
     "named": false
   },
   {
-    "type": "CREATE TYPE",
+    "type": "annotation",
     "named": false
   },
   {
-    "type": "DEFAULT",
+    "type": "before",
     "named": false
   },
   {
-    "type": "DROP",
+    "type": "do",
     "named": false
   },
   {
-    "type": "EXTENDING",
+    "type": "each",
     "named": false
   },
   {
-    "type": "bool",
+    "type": "extending",
     "named": false
   },
   {
-    "type": "constraint",
-    "named": false
-  },
-  {
-    "type": "false",
-    "named": false
-  },
-  {
-    "type": "float",
+    "type": "for",
     "named": false
   },
   {
@@ -439,11 +463,7 @@
     "named": true
   },
   {
-    "type": "int",
-    "named": false
-  },
-  {
-    "type": "link",
+    "type": "module",
     "named": false
   },
   {
@@ -455,11 +475,15 @@
     "named": true
   },
   {
+    "type": "overloaded",
+    "named": false
+  },
+  {
     "type": "required",
     "named": false
   },
   {
-    "type": "str",
+    "type": "scalar",
     "named": false
   },
   {
@@ -467,7 +491,15 @@
     "named": true
   },
   {
-    "type": "true",
+    "type": "trigger",
+    "named": false
+  },
+  {
+    "type": "type",
+    "named": false
+  },
+  {
+    "type": "when",
     "named": false
   },
   {
